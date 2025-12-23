@@ -19,10 +19,11 @@ def get_todo(todo: int, db: Session = Depends(get_db)):
 
 @router.post("/")
 def add_todo(title: str, db: Session = Depends(get_db)):
-    title = db.query(Todo).filter(title=title).first()
-    db.add(title)
+    new_todo = Todo(title=title, complete=False)
+    db.add(new_todo)
     db.commit()
-    return title
+    db.refresh(new_todo)
+    return new_todo
 
 @router.put("/{todo_id}")
 def update_todo(todo_id: int, title:str, db: Session = Depends(get_db)):
